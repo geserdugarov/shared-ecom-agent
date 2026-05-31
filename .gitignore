@@ -1,0 +1,34 @@
+# Secrets — never commit
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Hermes runtime state (regenerated each run from config.template.yaml + env).
+# Only config.template.yaml and skills/ are tracked under hermes_home/.
+agent/hermes_home/config.yaml
+agent/hermes_home/auth.json
+agent/hermes_home/auth.lock
+agent/hermes_home/state.db
+agent/hermes_home/state.db-*
+agent/hermes_home/models_dev_cache.json
+agent/hermes_home/.skills_prompt_snapshot.json
+agent/hermes_home/sessions/
+agent/hermes_home/logs/
+agent/hermes_home/memories/
+agent/hermes_home/cron/
+agent/hermes_home/hooks/
+agent/hermes_home/pairing/
+agent/hermes_home/audio_cache/
+agent/hermes_home/image_cache/
+agent/hermes_home/skills/.hub/
+agent/hermes_home/skills/.usage.json
+agent/hermes_home/skills/.usage.json.lock
+
+# Per-run debug logs and MCP server log
+agent/*.jsonl
+agent/ecom_mcp.log

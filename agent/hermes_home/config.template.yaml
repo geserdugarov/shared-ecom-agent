@@ -1,0 +1,100 @@
+# Isolated Hermes config for the BitGN ECOM agent.
+#
+# hermes_agent.py points HERMES_HOME at this directory and renders this
+# template into config.yaml at runtime (see _render_hermes_config), so that
+# `hermes -z` loads THIS config instead of the user's ~/.hermes/config.yaml.
+#
+# The two placeholders below are filled in at runtime:
+#   __ECOM_MCP_PYTHON__  -> the Python interpreter running the benchmark
+#   __ECOM_MCP_SERVER__  -> the absolute path of ecom_mcp_server.py
+#
+# Goal: give the agent ONE channel to the world — the bitgn-ecom MCP server —
+# and nothing else. All native toolsets (terminal, file, web, browser, code
+# execution, memory, todo, messaging, ...) are disabled so the model cannot:
+#   - read or write the host filesystem
+#   - shell out / run code on the host
+#   - browse the web or hit external HTTP endpoints
+#   - call other LLMs via delegation/moa/aux providers
+#   - generate / synthesize media
+
+model:
+  # Default model. main.py overrides this per task via HERMES_INFERENCE_MODEL
+  # (see the flash/pro routing in main.py:_route_model).
+  default: deepseek/deepseek-v4-pro
+  provider: openrouter
+
+agent:
+  max_turns: 90
+  # Every built-in toolset hermes ships with on the cli platform is listed
+  # here so it is subtracted from the enabled set. Only `skills` (re-enabled
+  # in platform_toolsets below) and the bitgn-ecom MCP server survive.
+  disabled_toolsets:
+    - web
+    - browser
+    - terminal
+    - file
+    - code_execution
+    - vision
+    - video
+    - image_gen
+    - video_gen
+    - x_search
+    - moa
+    - tts
+    - todo
+    - memory
+    - session_search
+    - clarify
+    - delegation
+    - cronjob
+    - messaging
+    - homeassistant
+    - spotify
+    - yuanbao
+    - computer_use
+
+# Strip every native toolset off the cli platform — leave only the MCP server
+# and skills. Skills are served from the local hermes_home/skills/ directory;
+# they carry no network or host-FS access.
+platform_toolsets:
+  cli:
+    - bitgn-ecom
+    - skills
+
+mcp_servers:
+  bitgn-ecom:
+    enabled: true
+    command: __ECOM_MCP_PYTHON__
+    args:
+      - __ECOM_MCP_SERVER__
+    # Hermes spawns MCP stdio servers with a filtered env that drops everything
+    # except baseline safe keys (PATH, HOME, XDG_*). Per-task variables are
+    # passed explicitly here using ${VAR} interpolation against the hermes
+    # parent process env (which hermes_agent.py controls via subprocess.run).
+    env:
+      VAULT_HARNESS_URL: "${VAULT_HARNESS_URL}"
+      VAULT_MCP_REFS: "${VAULT_MCP_REFS}"
+      VAULT_MCP_LOG: "${VAULT_MCP_LOG}"
+      VAULT_MCP_DIAG: "${VAULT_MCP_DIAG}"
+
+# Belt-and-suspenders: turn off auxiliary LLM calls (vision/web_extract/
+# compression/etc.) so the agent can't fan out to other models.
+auxiliary:
+  vision:
+    provider: ""
+    model: ""
+  web_extract:
+    provider: ""
+    model: ""
+  compression:
+    provider: ""
+    model: ""
+
+# Quiet the session storage knobs (prevents writes to state.db piling up).
+sessions:
+  auto_prune: true
+  retention_days: 14
+
+# Disable the model-catalog HTTP fetch — no network during runs.
+model_catalog:
+  enabled: false
