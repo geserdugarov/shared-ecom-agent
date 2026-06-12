@@ -1,6 +1,6 @@
 # BitGN ECOM Agent
 
-An AI agent for the **BitGN Agent Challenge: E-commerce (ECOM)** benchmark — a
+An AI agent for the **[BitGN Agent Challenge: E-commerce (ECOM)](https://bitgn.com/challenge/ecom) ** benchmark — a
 simulated commercial environment where an agent must handle the full customer
 journey: product discovery, cart & checkout, payment-failure recovery, fraud
 defense, merchant operations, shipping, returns, and support — all while
