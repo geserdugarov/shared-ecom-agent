@@ -1,10 +1,14 @@
 # BitGN ECOM Agent
 
-An AI agent for the **[BitGN Agent Challenge: E-commerce (ECOM)](https://bitgn.com/challenge/ecom) ** benchmark — a
+An AI agent for the [BitGN Agent Challenge: E-commerce (ECOM)](https://bitgn.com/challenge/ecom) benchmark — a
 simulated commercial environment where an agent must handle the full customer
 journey: product discovery, cart & checkout, payment-failure recovery, fraud
 defense, merchant operations, shipping, returns, and support — all while
 staying inside business and security constraints.
+
+Result:
+<img width="1017" height="819" alt="image" src="https://github.com/user-attachments/assets/81bf0e11-191f-4dc4-aa50-cbddb8e87787" />
+At the current moment (12.06.2026) there are 105 participants total.
 
 The agent is built on the [Hermes](https://github.com/NousResearch) CLI agent
 loop, talks to each task's sandboxed ECOM VM through a single custom **MCP
@@ -18,6 +22,7 @@ stronger model.
 > bitgn-ecom MCP server. Every built-in Hermes toolset (terminal, filesystem,
 > web, browser, code execution, …) is disabled, so the model cannot touch the
 > host, run code, or reach the network. See [Isolation model](#isolation-model).
+
 
 ---
 
